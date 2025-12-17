@@ -1,1 +1,8 @@
-nim,nama,kelas,semester,kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan
+nim,nama,semester,kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan
+220001,Alice,2,2,IF201,Data Structures,3,IF201-2A,Monday,08:00,09:40,LAB 1
+220001,Alice,2,2,IF202,Discrete Mathematics,3,IF202-2A,Tuesday,10:00,11:40,R101
+220001,Alice,2,2,IF203,Database Systems,3,IF203-2A,Wednesday,08:00,09:40,LAB 2
+220001,Alice,2,2,IF204,Computer Organization,3,IF204-2A,Thursday,10:00,11:40,R102
+220001,Alice,2,2,IF205,Algorithms,3,IF205-2A,Friday,08:00,09:40,LAB 3
+220002,Bob,3,3,IF301,Advanced Programming,3,IF301-3A,Monday,10:00,11:40,LAB 1
+220002,Bob,3,3,IF302,Computer Networks,3,IF302-3A,Tuesday,08:00,09:40,LAB 2

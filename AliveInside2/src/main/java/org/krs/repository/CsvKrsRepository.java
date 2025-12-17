@@ -17,7 +17,7 @@ public class CsvKrsRepository {
     private static final String MK_SEM3_FILE    = BASE_PATH + "mk_sem3.csv";
     private static final String KRS_FILE        = BASE_PATH + "krs.csv";
 
-    // ---------- master data (classes) ----------
+    // ---------- load master classes ----------
 
     public List<KelasKuliah> loadPaketSemester2() {
         return loadClassesFromCsv(PAKET_SEM2_FILE);
@@ -29,100 +29,90 @@ public class CsvKrsRepository {
 
     private List<KelasKuliah> loadClassesFromCsv(String filePath) {
         List<KelasKuliah> result = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
-
-            String line = reader.readLine(); // skip header
+        try (BufferedReader reader = newReader(filePath)) {
+            String line = reader.readLine(); // header
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) continue;
+                String[] p = line.split(",");
+                if (p.length < 9) continue;
 
-                String[] parts = line.split(",");
-                if (parts.length < 9) continue;
-
-                // kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan,kapasitas
-                String courseCode  = parts[0].trim();
-                String courseName  = parts[1].trim();
-                int sks            = Integer.parseInt(parts[2].trim());
-                String classCode   = parts[3].trim();
-                String day         = parts[4].trim();
-                String startTime   = parts[5].trim();
-                String endTime     = parts[6].trim();
-                String room        = parts[7].trim();
-                int capacity       = Integer.parseInt(parts[8].trim());
-
-                MataKuliah mk = new MataKuliah(courseCode, courseName, sks);
-                KelasKuliah kk = new KelasKuliah(mk, classCode, day, startTime, endTime, room, capacity);
+                MataKuliah mk = new MataKuliah(
+                        p[0].trim(),
+                        p[1].trim(),
+                        Integer.parseInt(p[2].trim())
+                );
+                KelasKuliah kk = new KelasKuliah(
+                        mk,
+                        p[3].trim(),
+                        p[4].trim(),
+                        p[5].trim(),
+                        p[6].trim(),
+                        p[7].trim(),
+                        Integer.parseInt(p[8].trim())
+                );
                 result.add(kk);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
-    // ---------- KRS data (per student) ----------
+
+    // ---------- KRS per student ----------
 
     public List<KrsItem> loadKrsByNim(Mahasiswa student) {
         List<KrsItem> items = new ArrayList<>();
         File file = new File(KRS_FILE);
-        if (!file.exists()) {
-            return items;
-        }
+        if (!file.exists()) return items;
 
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
-
-            String line = reader.readLine(); // skip header
+        try (BufferedReader reader = newReader(KRS_FILE)) {
+            String line = reader.readLine(); // header
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) continue;
+                String[] p = line.split(",");
+                if (p.length < 12) continue;
+                if (!p[0].trim().equals(student.getNim())) continue;
 
-                String[] parts = line.split(",");
-                if (parts.length < 12) continue;
-
-                // nim,nama,kelas,semester,kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan
-                String nim = parts[0].trim();
-                if (!nim.equals(student.getNim())) continue;
-
-                String name      = parts[1].trim();
-                String kelas     = parts[2].trim();
-                int semester     = Integer.parseInt(parts[3].trim());
-                String codeMk    = parts[4].trim();
-                String nameMk    = parts[5].trim();
-                int sks          = Integer.parseInt(parts[6].trim());
-                String classCode = parts[7].trim();
-                String day       = parts[8].trim();
-                String startTime = parts[9].trim();
-                String endTime   = parts[10].trim();
-                String room      = parts[11].trim();
-
-                Mahasiswa m = new Mahasiswa(nim, name, kelas, semester, student.getMaxSks());
-                MataKuliah mk = new MataKuliah(codeMk, nameMk, sks);
-                KelasKuliah kk = new KelasKuliah(mk, classCode, day, startTime, endTime, room, 0);
-
+                Mahasiswa m = new Mahasiswa(
+                        p[0].trim(),        //nim
+                        p[1].trim(),        //name
+                        Integer.parseInt(p[2].trim()), //semester
+                        student.getMaxSks()   //max sks
+                );
+                MataKuliah mk = new MataKuliah(
+                        p[4].trim(),
+                        p[5].trim(),
+                        Integer.parseInt(p[6].trim())
+                );
+                KelasKuliah kk = new KelasKuliah(
+                        mk,
+                        p[7].trim(),
+                        p[8].trim(),
+                        p[9].trim(),
+                        p[10].trim(),
+                        p[11].trim(),
+                        0
+                );
                 items.add(new KrsItem(m, kk));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return items;
     }
 
     public void appendKrsItem(KrsItem item) {
         ensureKrsHeaderExists();
 
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(KRS_FILE, true), StandardCharsets.UTF_8))) {
-
+        try (BufferedWriter writer = newWriter(KRS_FILE, true)) {
             Mahasiswa m = item.getStudent();
             KelasKuliah k = item.getKelasKuliah();
 
             String line = String.join(",",
                     m.getNim(),
                     m.getName(),
-                    m.getKelas(),
+                    String.valueOf(m.getSemester()),
                     String.valueOf(m.getSemester()),
                     k.getCourse().getCode(),
                     k.getCourse().getName(),
@@ -133,7 +123,6 @@ public class CsvKrsRepository {
                     k.getEndTime(),
                     k.getRoom()
             );
-
             writer.write(line);
             writer.newLine();
         } catch (IOException e) {
@@ -145,13 +134,30 @@ public class CsvKrsRepository {
         File file = new File(KRS_FILE);
         if (file.exists()) return;
 
-        file.getParentFile().mkdirs();
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            writer.write("nim,nama,kelas,semester,kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan");
+        try (BufferedWriter writer = newWriter(KRS_FILE, false)) {
+            writer.write(KRS_HEADER);
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    private BufferedReader newReader(String filePath) throws IOException {
+        return new BufferedReader(
+                new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8)
+        );
+    }
+
+    private static final String KRS_HEADER =
+            "nim,nama,semester,semester_copy,kode_mk,nama_mk,sks," +
+                    "kode_kelas,hari,jam_mulai,jam_selesai,ruangan";
+
+    private BufferedWriter newWriter(String filePath, boolean append) throws IOException {
+        File file = new File(filePath);
+        file.getParentFile().mkdirs();
+        return new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file, append), StandardCharsets.UTF_8)
+        );
+    }
+
 }

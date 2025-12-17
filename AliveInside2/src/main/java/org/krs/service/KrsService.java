@@ -51,7 +51,7 @@ public class KrsService {
         int e1 = toMinutes(end1);
         int s2 = toMinutes(start2);
         int e2 = toMinutes(end2);
-        return s1 < e2 && s2 < e1;
+        return s1 < e2 && s2 < e1;   // interval overlap
     }
 
     private int toMinutes(String hhmm) {
@@ -65,30 +65,30 @@ public class KrsService {
                                 List<KrsItem> currentItems,
                                 KelasKuliah newClass) {
 
-        if (hasScheduleConflict(currentItems, newClass)) {
-            return false;
-        }
+        if (newClass.isFull()) return false;
+        if (hasScheduleConflict(currentItems, newClass)) return false;
 
-        int currentSks = calculateTotalSks(currentItems);
-        int newTotal = currentSks + newClass.getCourse().getSks();
+        int newTotal = calculateTotalSks(currentItems) + newClass.getCourse().getSks();
         return newTotal <= student.getMaxSks();
     }
 
-    // ---------- package KRS for class A ----------
+    // ---------- package KRS for semester 2 ----------
 
-    public List<KrsItem> generatePackageKrs(Mahasiswa student) {
-        List<KelasKuliah> paket = getPaketSemester2();
+    private List<KrsItem> toKrsItems(Mahasiswa student, List<KelasKuliah> classes) {
         List<KrsItem> result = new ArrayList<>();
-        for (KelasKuliah k : paket) {
+        for (KelasKuliah k : classes) {
             result.add(new KrsItem(student, k));
         }
         return result;
     }
 
-    // ---------- persistence helpers (optional) ----------
+    public List<KrsItem> generatePackageKrs(Mahasiswa student) {
+        return toKrsItems(student, getPaketSemester2());
+    }
 
-    public void savePackageKrs(Mahasiswa student) {
-        List<KrsItem> items = generatePackageKrs(student);
+    // ---------- persistence helpers ----------
+
+    public void saveKrsItems(List<KrsItem> items) {
         for (KrsItem item : items) {
             repository.appendKrsItem(item);
         }
@@ -96,5 +96,9 @@ public class KrsService {
 
     public List<KrsItem> loadExistingKrs(Mahasiswa student) {
         return repository.loadKrsByNim(student);
+    }
+
+    public void savePackageKrs(Mahasiswa student) {
+        saveKrsItems(generatePackageKrs(student));
     }
 }
