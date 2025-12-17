@@ -1,0 +1,4 @@
+kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan,kapasitas
+IF301,Advanced Programming,3,IF301-3A,Monday,10:00,11:40,LAB 1,30
+IF302,Computer Networks,3,IF302-3A,Tuesday,08:00,09:40,LAB 2,30
+IF303,Operating Systems,3,IF303-3A,Wednesday,10:00,11:40,R102,30
