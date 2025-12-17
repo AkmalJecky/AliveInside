@@ -8,6 +8,7 @@ public class KelasKuliah {
     private final String endTime;
     private final String room;
     private final int capacity;
+    private int currentEnrolled;
 
     public KelasKuliah(MataKuliah course,
                        String classCode,
@@ -23,6 +24,7 @@ public class KelasKuliah {
         this.endTime = endTime;
         this.room = room;
         this.capacity = capacity;
+        this.currentEnrolled = 0;
     }
 
     public MataKuliah getCourse() { return course; }
@@ -32,10 +34,33 @@ public class KelasKuliah {
     public String getEndTime() { return endTime; }
     public String getRoom() { return room; }
     public int getCapacity() { return capacity; }
+    public boolean isFull() {
+        return currentEnrolled >= capacity;
+    }
+
+    public void incrementEnrolled() {
+        if (currentEnrolled < capacity) {
+            currentEnrolled++;
+        }
+    }
+
+    public void decrementEnrolled() {
+        if (currentEnrolled > 0) {
+            currentEnrolled--;
+        }
+    }
 
     @Override
     public String toString() {
-        return course.getCode() + "-" + classCode + " " +
-                day + " " + startTime + "-" + endTime + " @ " + room;
+        return "%s - %s %s %s-%s @ %s (%d SKS)"
+                .formatted(
+                        course.getCode(),
+                        classCode,
+                        day,
+                        startTime,
+                        endTime,
+                        room,
+                        course.getSks()
+                );
     }
 }
