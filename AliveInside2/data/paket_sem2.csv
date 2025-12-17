@@ -1,0 +1,4 @@
+kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan,kapasitas
+IF201,Data Structures,3,IF201-2A,Monday,08:00,09:40,LAB 1,30
+IF202,Discrete Math,3,IF202-2A,Tuesday,10:00,11:40,R101,30
+IF203,Database,3,IF203-2A,Wednesday,08:00,09:40,LAB 2,30
