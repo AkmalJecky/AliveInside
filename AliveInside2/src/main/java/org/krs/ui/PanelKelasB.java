@@ -16,8 +16,8 @@ public class PanelKelasB extends JPanel {
         initUI();
     }
 
-    private JButton redButton(String text) {
-        JButton btn = new JButton(text);
+    private JButton redButton() {
+        JButton btn = new JButton("Hapus");
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(new Color(0xF44336)); // merah
         btn.setForeground(Color.WHITE);
@@ -25,8 +25,8 @@ public class PanelKelasB extends JPanel {
         return btn;
     }
 
-    private JButton greenButton(String text) {
-        JButton btn = new JButton(text);
+    private JButton greenButton() {
+        JButton btn = new JButton("Tambah");
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(new Color(0x4CAF50)); // hijau
         btn.setForeground(Color.WHITE);
@@ -34,8 +34,8 @@ public class PanelKelasB extends JPanel {
         return btn;
     }
 
-    private JButton whiteButton(String text) {
-        JButton btn = new JButton(text);
+    private JButton whiteButton() {
+        JButton btn = new JButton("Kembali ke Login");
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(Color.WHITE);
         btn.setForeground(Color.BLACK);
@@ -81,15 +81,15 @@ public class PanelKelasB extends JPanel {
 
         // ====== PANEL TOMBOL (BAWAH) ======
         JPanel buttonPanel = new JPanel();
-        JButton btnAdd = greenButton("Tambah");
-        JButton btnDelete = redButton("Hapus");
-        JButton btnBack = whiteButton("Kembali ke Login");
+        JButton btnAdd = greenButton();
+        JButton btnDelete = redButton();
+        JButton btnBack = whiteButton();
 
         // Tambah dari comboBox ke tabel (dengan cek duplikat)
-        btnAdd.addActionListener(e -> tambahDariCombo());
+        btnAdd.addActionListener(_ -> tambahDariCombo());
 
         // Hapus baris terpilih
-        btnDelete.addActionListener(e -> {
+        btnDelete.addActionListener(_ -> {
             int row = table.getSelectedRow();
             if (row == -1) {
                 JOptionPane.showMessageDialog(this, "Pilih baris yang akan dihapus");
@@ -99,7 +99,7 @@ public class PanelKelasB extends JPanel {
         });
 
         // Kembali ke login
-        btnBack.addActionListener(e -> {
+        btnBack.addActionListener(_ -> {
             mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("LOGIN");
         });
