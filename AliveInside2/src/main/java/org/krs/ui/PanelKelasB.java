@@ -9,17 +9,36 @@ public class PanelKelasB extends JPanel {
     private final MainFrame mainFrame;
     private DefaultTableModel tableModel;
     private JTable table;
+    private JComboBox<String> cbMataKuliah;
 
     public PanelKelasB(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         initUI();
     }
 
-    private JButton styledButton(String text) {
+    private JButton redButton(String text) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(new Color(0x4CAF50));
+        btn.setBackground(new Color(0xF44336)); // merah
         btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        return btn;
+    }
+
+    private JButton greenButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setBackground(new Color(0x4CAF50)); // hijau
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        return btn;
+    }
+
+    private JButton whiteButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setBackground(Color.WHITE);
+        btn.setForeground(Color.BLACK);
         btn.setFocusPainted(false);
         return btn;
     }
@@ -27,60 +46,49 @@ public class PanelKelasB extends JPanel {
     private void initUI() {
         setLayout(new BorderLayout());
 
+        // ====== COMBOBOX MATA KULIAH (ATAS) ======
+        String[] daftarMk = {
+                "IF101 - Dasar Pemrograman (3)",
+                "IF102 - Struktur Data (3)",
+                "IF103 - Matematika Diskrit (3)"
+        };
+        cbMataKuliah = new JComboBox<>(daftarMk);
+        cbMataKuliah.setPreferredSize(new Dimension(350, 28));
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(new JLabel("Pilih Mata Kuliah:"));
+        topPanel.add(cbMataKuliah);
+
+        // ====== TABEL KRS (TENGAH) ======
         String[] columns = {"Kode MK", "Nama MK", "Kelas", "Hari", "Jam", "SKS"};
-        tableModel = new DefaultTableModel(columns, 0);
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabel hanya display
+            }
+        };
+
         table = new JTable(tableModel);
+        table.setRowHeight(24);
+        table.setFillsViewportHeight(true);
+        table.setShowGrid(true);
+        table.setGridColor(new Color(0xBDBDBD));
+        table.setSelectionBackground(new Color(0xC8E6C9)); // hijau muda
+        table.setSelectionForeground(Color.BLACK);
+        table.getTableHeader().setReorderingAllowed(false);
 
         JScrollPane scrollPane = new JScrollPane(table);
 
-        JPanel formPanel = new JPanel(new GridLayout(2, 6, 5, 5));
-        JTextField tfKode = new JTextField();
-        JTextField tfNama = new JTextField();
-        JTextField tfKelas = new JTextField("B");
-        JTextField tfHari = new JTextField();
-        JTextField tfJam = new JTextField();
-        JTextField tfSks = new JTextField();
-
-        formPanel.add(new JLabel("Kode MK"));
-        formPanel.add(new JLabel("Nama MK"));
-        formPanel.add(new JLabel("Kelas"));
-        formPanel.add(new JLabel("Hari"));
-        formPanel.add(new JLabel("Jam"));
-        formPanel.add(new JLabel("SKS"));
-
-        formPanel.add(tfKode);
-        formPanel.add(tfNama);
-        formPanel.add(tfKelas);
-        formPanel.add(tfHari);
-        formPanel.add(tfJam);
-        formPanel.add(tfSks);
-
+        // ====== PANEL TOMBOL (BAWAH) ======
         JPanel buttonPanel = new JPanel();
-        JButton btnAdd = styledButton("Tambah");
-        JButton btnDelete = styledButton("Hapus");
-        JButton btnBack = styledButton("Keluar (Kembali Login)");
+        JButton btnAdd = greenButton("Tambah");
+        JButton btnDelete = redButton("Hapus");
+        JButton btnBack = whiteButton("Kembali ke Login");
 
-        btnAdd.addActionListener(e -> {
-            if (tfKode.getText().isEmpty() || tfNama.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Kode MK dan Nama MK wajib diisi");
-                return;
-            }
-            tableModel.addRow(new Object[]{
-                    tfKode.getText(),
-                    tfNama.getText(),
-                    tfKelas.getText(),
-                    tfHari.getText(),
-                    tfJam.getText(),
-                    tfSks.getText()
-            });
+        // Tambah dari comboBox ke tabel (dengan cek duplikat)
+        btnAdd.addActionListener(e -> tambahDariCombo());
 
-            tfKode.setText("");
-            tfNama.setText("");
-            tfHari.setText("");
-            tfJam.setText("");
-            tfSks.setText("");
-        });
-
+        // Hapus baris terpilih
         btnDelete.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row == -1) {
@@ -90,29 +98,69 @@ public class PanelKelasB extends JPanel {
             tableModel.removeRow(row);
         });
 
+        // Kembali ke login
         btnBack.addActionListener(e -> {
             mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("LOGIN");
-        });
-
-        table.getSelectionModel().addListSelectionListener(ev -> {
-            int row = table.getSelectedRow();
-            if (row >= 0) {
-                tfKode.setText(String.valueOf(tableModel.getValueAt(row, 0)));
-                tfNama.setText(String.valueOf(tableModel.getValueAt(row, 1)));
-                tfKelas.setText(String.valueOf(tableModel.getValueAt(row, 2)));
-                tfHari.setText(String.valueOf(tableModel.getValueAt(row, 3)));
-                tfJam.setText(String.valueOf(tableModel.getValueAt(row, 4)));
-                tfSks.setText(String.valueOf(tableModel.getValueAt(row, 5)));
-            }
         });
 
         buttonPanel.add(btnAdd);
         buttonPanel.add(btnDelete);
         buttonPanel.add(btnBack);
 
-        add(formPanel, BorderLayout.NORTH);
+        // ====== RANGKAI KE PANEL ======
+        add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    // ====== LOGIKA: isi detail MK berdasarkan pilihan comboBox + CEK DUPLIKAT ======
+    private void tambahDariCombo() {
+        String selected = (String) cbMataKuliah.getSelectedItem();
+        if (selected == null) return;
+
+        String kode = "";
+        String nama = "";
+        String kelas = "B";
+        String hari = "";
+        String jam = "";
+        String sks = "";
+
+        if (selected.startsWith("IF101")) {
+            kode = "IF101";
+            nama = "Dasar Pemrograman";
+            sks  = "3";
+            hari = "Senin";
+            jam  = "08:00-10:00";
+        } else if (selected.startsWith("IF102")) {
+            kode = "IF102";
+            nama = "Struktur Data";
+            sks  = "3";
+            hari = "Selasa";
+            jam  = "10:00-12:00";
+        } else if (selected.startsWith("IF103")) {
+            kode = "IF103";
+            nama = "Matematika Diskrit";
+            sks  = "3";
+            hari = "Rabu";
+            jam  = "13:00-15:00";
+        }
+
+        // ----- CEK DUPLIKAT BERDASARKAN KODE MK -----
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            String kodeExisting = String.valueOf(tableModel.getValueAt(i, 0));
+            if (kodeExisting.equals(kode)) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Mata kuliah " + nama + " sudah diambil.",
+                        "Duplikat Mata Kuliah",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return; // batalkan penambahan
+            }
+        }
+
+        // kalau tidak duplikat, baru tambahkan ke tabel
+        tableModel.addRow(new Object[]{kode, nama, kelas, hari, jam, sks});
     }
 }
