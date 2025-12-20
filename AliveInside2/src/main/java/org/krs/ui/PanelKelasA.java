@@ -1,5 +1,7 @@
 package org.krs.ui;
 
+import org.krs.service.KrsService;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -7,15 +9,14 @@ import java.awt.*;
 public class PanelKelasA extends JPanel {
 
     private final MainFrame mainFrame;
-    private DefaultTableModel tableModel;
 
     public PanelKelasA(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         initUI();
     }
 
-    private JButton styledButton(String text) {
-        JButton btn = new JButton(text);
+    private JButton styledButton() {
+        JButton btn = new JButton("Kembali ke Login");
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(new Color(0x9C27B0));
         btn.setForeground(Color.WHITE);
@@ -36,7 +37,8 @@ public class PanelKelasA extends JPanel {
 
         // tabel hanya untuk menampilkan daftar matkul yang sudah fixed
         String[] columns = {"Kode MK", "Nama MK", "Kelas", "Hari", "Jam", "SKS"};
-        tableModel = new DefaultTableModel(columns, 0) {
+        // tidak bisa diedit, karena otomatis
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // tidak bisa diedit, karena otomatis
@@ -51,7 +53,7 @@ public class PanelKelasA extends JPanel {
         tableModel.addRow(new Object[]{"INT103", "Academic Writing", "A", "Rabu", "13:00-15:00", "2"});
 
         JPanel bottomPanel = new JPanel();
-        JButton btnBack = styledButton("Kembali ke Login");
+        JButton btnBack = styledButton();
         btnBack.addActionListener(e -> {
             mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("LOGIN");
