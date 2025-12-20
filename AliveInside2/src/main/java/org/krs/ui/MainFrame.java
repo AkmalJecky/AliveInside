@@ -1,5 +1,7 @@
 package org.krs.ui;
 
+import org.krs.model.Mahasiswa;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,31 +10,39 @@ public class MainFrame extends JFrame {
     CardLayout cardLayout = new CardLayout();
     JPanel mainPanel = new JPanel(cardLayout);
 
+    private Mahasiswa currentStudent;
+
     public MainFrame() {
         setTitle("Sistem KRS");
         setSize(900, 550);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        LoginPanel masuk =  new LoginPanel(this);
+        LoginPanel masuk   = new LoginPanel(this);
         PanelKelasA panelKrsA = new PanelKelasA(this);
         PanelKelasB panelKrsB = new PanelKelasB(this);
 
         mainPanel.add(splashScreen(), "SPLASH");
-        mainPanel.add(panelKrsA, "KRS_A");
         mainPanel.add(masuk, "LOGIN");
+        mainPanel.add(panelKrsA, "KRS_A");
         mainPanel.add(panelKrsB, "KRS_B");
 
         add(mainPanel);
-        showPage("LOGIN");
-
         cardLayout.show(mainPanel, "SPLASH");
-
         showLoading();
+
     }
 
     public void showPage(String name) {
         cardLayout.show(mainPanel, name);
+    }
+
+    public void setCurrentStudent(Mahasiswa m) {
+        this.currentStudent = m;
+    }
+
+    public Mahasiswa getCurrentStudent() {
+        return currentStudent;
     }
 
 
@@ -40,7 +50,7 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.BLACK);
 
-        JLabel title = new JLabel("Temperature App", JLabel.CENTER);
+        JLabel title = new JLabel("Please Wait", JLabel.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 40));
         title.setForeground(Color.WHITE);
 
