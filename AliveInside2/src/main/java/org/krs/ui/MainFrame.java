@@ -1,50 +1,38 @@
 package org.krs.ui;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
+import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
 
     CardLayout cardLayout = new CardLayout();
     JPanel mainPanel = new JPanel(cardLayout);
 
-    DefaultTableModel tableModel;
-    JTable table;
-
-    JTextField textField;
-
-
     public MainFrame() {
-        setTitle("Temperature Management App");
+        setTitle("Sistem KRS");
         setSize(900, 550);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        LoginPanel masuk =  new LoginPanel(this);
+        PanelKelasA panelKrsA = new PanelKelasA(this);
+        PanelKelasB panelKrsB = new PanelKelasB(this);
+
         mainPanel.add(splashScreen(), "SPLASH");
-        /*mainPanel.add(mainMenu(), "MENU");
-        mainPanel.add(converterPage(), "CONVERTER");
-        mainPanel.add(tablePage(), "TABLE");*/
+        mainPanel.add(panelKrsA, "KRS_A");
+        mainPanel.add(masuk, "LOGIN");
+        mainPanel.add(panelKrsB, "KRS_B");
 
         add(mainPanel);
-        cardLayout.show(mainPanel, "Splash");
+        showPage("LOGIN");
+
+        cardLayout.show(mainPanel, "SPLASH");
 
         showLoading();
     }
 
-    JButton styledButton(String text) {
-        JButton btn = new JButton(text);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(Color.LIGHT_GRAY);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        return btn;
-    }
-
-    void showLoading() {
-        Timer t = new Timer(2500, e -> cardLayout.show(mainPanel, "MENU"));
-        t.setRepeats(false);
-        t.start();
+    public void showPage(String name) {
+        cardLayout.show(mainPanel, name);
     }
 
 
@@ -52,7 +40,7 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.BLACK);
 
-        JLabel title = new JLabel("KRS", JLabel.CENTER);
+        JLabel title = new JLabel("Temperature App", JLabel.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 40));
         title.setForeground(Color.WHITE);
 
@@ -64,10 +52,15 @@ public class MainFrame extends JFrame {
 
         return panel;
     }
+
+    void showLoading() {
+        Timer t = new Timer(2500, e -> cardLayout.show(mainPanel, "LOGIN"));
+        t.setRepeats(false);
+        t.start();
+    }
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
-
 }
-
-
