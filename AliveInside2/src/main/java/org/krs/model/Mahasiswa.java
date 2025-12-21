@@ -2,7 +2,7 @@ package org.krs.model;
 
 public class Mahasiswa {
     private final String nim;
-    private final String name;
+    private String name;
     private final int semester;
     private final int maxSks;
 
@@ -17,6 +17,9 @@ public class Mahasiswa {
     public String getName() { return name; }
     public int getSemester() { return semester; }
     public int getMaxSks() { return maxSks; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {

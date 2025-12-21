@@ -4,6 +4,7 @@ import org.krs.model.KelasKuliah;
 import org.krs.model.KrsItem;
 import org.krs.model.Mahasiswa;
 import org.krs.repository.CsvKrsRepository;
+import org.krs.repository.CsvMahasiswaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +13,12 @@ import java.util.Map;
 public class KrsService {
 
     private final CsvKrsRepository repository;
+    private final CsvMahasiswaRepository mahasiswaRepository;
 
     public KrsService(CsvKrsRepository repository) {
         this.repository = repository;
+        this.mahasiswaRepository = new CsvMahasiswaRepository();
     }
-
-    // ---------- load available classes ----------
 
     public List<KelasKuliah> getPaketSemester2() {
         return repository.loadPaketSemester2();
@@ -26,8 +27,6 @@ public class KrsService {
     public List<KelasKuliah> getSemester3Classes() {
         return repository.loadMkSemester3();
     }
-
-    // ---------- business logic ----------
 
     public int calculateTotalSks(List<KrsItem> items) {
         return items.stream()
@@ -52,7 +51,7 @@ public class KrsService {
         int e1 = toMinutes(end1);
         int s2 = toMinutes(start2);
         int e2 = toMinutes(end2);
-        return s1 < e2 && s2 < e1;   // interval overlap
+        return s1 < e2 && s2 < e1;
     }
 
     private int toMinutes(String hhmm) {
@@ -73,8 +72,6 @@ public class KrsService {
         return newTotal <= student.getMaxSks();
     }
 
-    // ---------- package KRS for semester 2 ----------
-
     private List<KrsItem> toKrsItems(Mahasiswa student, List<KelasKuliah> classes) {
         List<KrsItem> result = new ArrayList<>();
         for (KelasKuliah k : classes) {
@@ -86,8 +83,6 @@ public class KrsService {
     public List<KrsItem> generatePackageKrs(Mahasiswa student) {
         return toKrsItems(student, getPaketSemester2());
     }
-
-    // ---------- persistence helpers ----------
 
     public void saveKrsItems(List<KrsItem> items) {
         for (KrsItem item : items) {
@@ -105,7 +100,7 @@ public class KrsService {
 
     public List<KelasKuliah> getSemester3ClassesWithEnrollment() {
         List<KelasKuliah> classes = repository.loadMkSemester3();
-        Map<String, Integer> counts = repository.countEnrollmentPerClass(); // method baru
+        Map<String, Integer> counts = repository.countEnrollmentPerClass();
 
         for (KelasKuliah k : classes) {
             Integer c = counts.get(k.getClassCode());
@@ -118,5 +113,15 @@ public class KrsService {
 
     public void deleteKrsItem(KrsItem item) {
         repository.deleteKrsItem(item);
+    }
+
+    // ---------- UPDATE NAMA (service) ----------
+    public void updateNamaMahasiswa(Mahasiswa student, String namaBaru) {
+        student.setName(namaBaru);
+
+        repository.updateNamaMahasiswa(student.getNim(), namaBaru);
+
+        // update juga di master mahasiswa.csv
+        mahasiswaRepository.updateNamaMahasiswa(student.getNim(), namaBaru);
     }
 }
