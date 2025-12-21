@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
         setTitle("Sistem KRS");
         setSize(900, 550);
         setLocationRelativeTo(null);
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         masuk = new LoginPanel(this);
@@ -42,6 +43,8 @@ public class MainFrame extends JFrame {
     public void showPage(String name) {
         if ("PILIH_B".equals(name) && panelPilihB != null) {
             panelPilihB.refreshMahasiswaInfo();
+        } else if ("KRS_A".equals(name) && panelKrsA != null) {
+            panelKrsA.refreshMahasiswaInfo();
         }
         cardLayout.show(mainPanel, name);
     }
