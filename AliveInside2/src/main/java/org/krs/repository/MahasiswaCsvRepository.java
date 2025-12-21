@@ -2,11 +2,14 @@ package org.krs.repository;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MahasiswaCsvRepository {
 
     private static final String FILE_PATH = "data" + File.separator + "mahasiswa.csv";
 
+    // READ: cari kelas berdasarkan NIM dan Nama (login)
     public String getKelasByNimAndNama(String nim, String nama) {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
@@ -41,5 +44,53 @@ public class MahasiswaCsvRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // UPDATE: ganti nama berdasarkan NIM
+    public void updateNamaMahasiswa(String nimTarget, String namaBaru) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) return;
+
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+
+            String header = reader.readLine();
+            if (header != null) {
+                lines.add(header);
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
+
+                String[] p = line.split(",");
+                if (p.length < 3) {
+                    lines.add(line);
+                    continue;
+                }
+
+                if (p[0].trim().equals(nimTarget)) {
+                    p[1] = namaBaru;
+                    line = String.join(",", p);
+                }
+                lines.add(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8))) {
+            for (String l : lines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

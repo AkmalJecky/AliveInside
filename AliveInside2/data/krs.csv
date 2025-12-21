@@ -1,5 +1,5 @@
 nim,nama,semester,semester_copy,kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan
-001,jokos,3,3,IF301,Pemrograman Web,3,IF301-3B1,Senin,08:00,10:00,LAB 1
+001,budi,3,3,IF301,Pemrograman Web,3,IF301-3B1,Senin,08:00,10:00,LAB 1
 002,siti,3,3,IF301,Pemrograman Web,3,IF301-3B1,Senin,08:00,10:00,LAB 1
 003,Andi,3,3,IF301,Pemrograman Web,3,IF301-3B2,Rabu,10:00,12:00,LAB 2
 004,Rina,3,3,IF302,Basis Data Lanjut,3,IF302-3B1,Selasa,08:00,10:00,R302
