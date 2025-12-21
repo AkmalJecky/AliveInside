@@ -17,7 +17,6 @@ public class PanelKelasA extends JPanel {
     private final MainFrame mainFrame;
     private final KrsService krsService;
 
-    // identitas
     private JLabel lblNamaValue;
     private JLabel lblNimValue;
     private JLabel lblSemValue;
@@ -95,9 +94,6 @@ public class PanelKelasA extends JPanel {
 
         return topPanel;
     }
-
-
-
 
     // ====== CENTER: Tabel + Pengumuman vertikal ======
     private JPanel buildTableAndNoticePanel() {
