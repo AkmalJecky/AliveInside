@@ -1,6 +1,9 @@
 kode_mk,nama_mk,sks,kode_kelas,hari,jam_mulai,jam_selesai,ruangan,kapasitas
-IF301,Advanced Programming,3,IF301-3A,Monday,10:00,11:40,LAB 1,30
-IF302,Computer Networks,3,IF302-3A,Tuesday,08:00,09:40,LAB 2,30
-IF303,Operating Systems,3,IF303-3A,Wednesday,10:00,11:40,R201,30
-IF304,Software Engineering,3,IF304-3A,Thursday,08:00,09:40,R202,30
-IF305,Human Computer Interaction,3,IF305-3A,Friday,10:00,11:40,R203,30
+IF301,Pemrograman Web,3,IF301-3B1,Senin,08:00,10:00,LAB 1,30
+IF301,Pemrograman Web,3,IF301-3B2,Rabu,10:00,12:00,LAB 2,30
+IF301,Pemrograman Web,3,IF301-3B3,Jumat,13:00,15:00,R301,25
+IF302,Basis Data Lanjut,3,IF302-3B1,Selasa,08:00,10:00,R302,30
+IF302,Basis Data Lanjut,3,IF302-3B2,Kamis,10:00,12:00,R303,30
+IF303,Jaringan Komputer,3,IF303-3B1,Senin,13:00,15:00,LAB Jarkom,30
+IF303,Jaringan Komputer,3,IF303-3B2,Rabu,15:00,17:00,LAB Jarkom,25
+IF304,Sistem Operasi,3,IF304-3B1,Selasa,13:00,15:00,R304,30

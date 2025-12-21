@@ -12,28 +12,37 @@ public class MainFrame extends JFrame {
 
     private Mahasiswa currentStudent;
 
+    private PanelPilihMatkulB panelPilihB;
+    private PanelKelasB panelKrsB;
+    private PanelKelasA panelKrsA;
+    private LoginPanel masuk;
+
     public MainFrame() {
         setTitle("Sistem KRS");
         setSize(900, 550);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        LoginPanel masuk   = new LoginPanel(this);
-        PanelKelasA panelKrsA = new PanelKelasA(this);
-        PanelKelasB panelKrsB = new PanelKelasB(this);
+        masuk = new LoginPanel(this);
+        panelKrsA = new PanelKelasA(this);
+        panelKrsB = new PanelKelasB(this);
+        panelPilihB = new PanelPilihMatkulB(this);
 
         mainPanel.add(splashScreen(), "SPLASH");
         mainPanel.add(masuk, "LOGIN");
         mainPanel.add(panelKrsA, "KRS_A");
         mainPanel.add(panelKrsB, "KRS_B");
+        mainPanel.add(panelPilihB, "PILIH_B");
 
         add(mainPanel);
         cardLayout.show(mainPanel, "SPLASH");
         showLoading();
-
     }
 
     public void showPage(String name) {
+        if ("PILIH_B".equals(name) && panelPilihB != null) {
+            panelPilihB.refreshMahasiswaInfo();
+        }
         cardLayout.show(mainPanel, name);
     }
 
@@ -45,21 +54,24 @@ public class MainFrame extends JFrame {
         return currentStudent;
     }
 
+    public PanelPilihMatkulB getPanelPilihB() {
+        return panelPilihB;
+    }
+
+    public PanelKelasB getPanelKrsB() {
+        return panelKrsB;
+    }
 
     JPanel splashScreen() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.BLACK);
-
         JLabel title = new JLabel("Please Wait", JLabel.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 40));
         title.setForeground(Color.WHITE);
-
         JProgressBar bar = new JProgressBar();
         bar.setIndeterminate(true);
-
         panel.add(title, BorderLayout.CENTER);
         panel.add(bar, BorderLayout.SOUTH);
-
         return panel;
     }
 
@@ -68,7 +80,6 @@ public class MainFrame extends JFrame {
         t.setRepeats(false);
         t.start();
     }
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));

@@ -7,6 +7,7 @@ import org.krs.repository.CsvKrsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class KrsService {
 
@@ -100,5 +101,22 @@ public class KrsService {
 
     public void savePackageKrs(Mahasiswa student) {
         saveKrsItems(generatePackageKrs(student));
+    }
+
+    public List<KelasKuliah> getSemester3ClassesWithEnrollment() {
+        List<KelasKuliah> classes = repository.loadMkSemester3();
+        Map<String, Integer> counts = repository.countEnrollmentPerClass(); // method baru
+
+        for (KelasKuliah k : classes) {
+            Integer c = counts.get(k.getClassCode());
+            if (c != null) {
+                k.setCurrentEnrolled(c);
+            }
+        }
+        return classes;
+    }
+
+    public void deleteKrsItem(KrsItem item) {
+        repository.deleteKrsItem(item);
     }
 }

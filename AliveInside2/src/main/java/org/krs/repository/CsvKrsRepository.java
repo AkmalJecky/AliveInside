@@ -8,7 +8,9 @@ import org.krs.model.MataKuliah;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CsvKrsRepository {
 
@@ -18,7 +20,6 @@ public class CsvKrsRepository {
     private static final String KRS_FILE        = BASE_PATH + "krs.csv";
 
     // ---------- load master classes ----------
-
     public List<KelasKuliah> loadPaketSemester2() {
         return loadClassesFromCsv(PAKET_SEM2_FILE);
     }
@@ -58,9 +59,7 @@ public class CsvKrsRepository {
         return result;
     }
 
-
     // ---------- KRS per student ----------
-
     public List<KrsItem> loadKrsByNim(Mahasiswa student) {
         List<KrsItem> items = new ArrayList<>();
         File file = new File(KRS_FILE);
@@ -130,6 +129,27 @@ public class CsvKrsRepository {
         }
     }
 
+    public Map<String, Integer> countEnrollmentPerClass() {
+        Map<String, Integer> counts = new HashMap<>();
+        File file = new File(KRS_FILE);
+        if (!file.exists()) return counts;
+
+        try (BufferedReader reader = newReader(KRS_FILE)) {
+            String line = reader.readLine(); // header
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",");
+                if (p.length < 12) continue;
+
+                String kodeKelas = p[7].trim(); // kolom kode_kelas [file:11]
+                counts.merge(kodeKelas, 1, Integer::sum);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return counts;
+    }
+
     private void ensureKrsHeaderExists() {
         File file = new File(KRS_FILE);
         if (file.exists()) return;
@@ -147,7 +167,6 @@ public class CsvKrsRepository {
                 new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8)
         );
     }
-
     private static final String KRS_HEADER =
             "nim,nama,semester,semester_copy,kode_mk,nama_mk,sks," +
                     "kode_kelas,hari,jam_mulai,jam_selesai,ruangan";
@@ -158,6 +177,55 @@ public class CsvKrsRepository {
         return new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file, append), StandardCharsets.UTF_8)
         );
+    }
+
+    //Delete KRS
+    public void deleteKrsItem(KrsItem target) {
+        File file = new File(KRS_FILE);
+        if (!file.exists()) return;
+
+        List<String> allLines = new ArrayList<>();
+        try (BufferedReader reader = newReader(KRS_FILE)) {
+            String line = reader.readLine(); // header
+            if (line == null) return;
+            String header = line;
+            allLines.add(header);
+
+            String nimTarget = target.getStudent().getNim();
+            String kodeMkTarget = target.getKelasKuliah().getCourse().getCode();
+            String kodeKelasTarget = target.getKelasKuliah().getClassCode();
+
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",");
+                if (p.length < 12) continue;
+
+                String nim = p[0].trim();
+                String kodeMk = p[4].trim();
+                String kodeKelas = p[7].trim();
+
+                // jika cocok dengan item yang mau dihapus, SKIP baris ini
+                if (nim.equals(nimTarget)
+                        && kodeMk.equals(kodeMkTarget)
+                        && kodeKelas.equals(kodeKelasTarget)) {
+                    continue;
+                }
+                allLines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // tulis ulang file
+        try (BufferedWriter writer = newWriter(KRS_FILE, false)) {
+            for (String l : allLines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
