@@ -29,7 +29,7 @@ public class PanelKelasB extends JPanel {
     private void initUI() {
         setLayout(new BorderLayout());
 
-        JLabel lblTitle = new JLabel("KRS Saya - Kelas B", JLabel.CENTER);
+        JLabel lblTitle = new JLabel("KRS Saya", JLabel.CENTER);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
         add(lblTitle, BorderLayout.NORTH);
 
@@ -52,7 +52,7 @@ public class PanelKelasB extends JPanel {
 
         btnDelete.addActionListener(_ -> hapusKrsTerpilih());
         btnBack.addActionListener(_ -> {
-            mainFrame.setTitle("Sistem KRS - Kelas B");
+            mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("PILIH_B");
         });
 

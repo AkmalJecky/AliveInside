@@ -17,7 +17,6 @@ public class LoginPanel extends JPanel {
         initUI();
     }
 
-    // tombol kotak hijau biasa
     private JButton styledButton() {
         JButton btn = new JButton("Masuk");
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));

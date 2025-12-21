@@ -2,7 +2,7 @@ package org.krs.model;
 
 public class KelasKuliah {
     private final MataKuliah course;
-    private final String classCode;   // e.g. "IF201-2A"
+    private final String classCode;
     private final String day;
     private final String startTime;
     private final String endTime;
