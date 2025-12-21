@@ -34,6 +34,12 @@ public class KelasKuliah {
     public String getEndTime() { return endTime; }
     public String getRoom() { return room; }
     public int getCapacity() { return capacity; }
+    public int getCurrentEnrolled() {
+        return currentEnrolled;
+    }
+    public void setCurrentEnrolled(int currentEnrolled) {
+        this.currentEnrolled = currentEnrolled;
+    }
     public boolean isFull() {
         return currentEnrolled >= capacity;
     }
