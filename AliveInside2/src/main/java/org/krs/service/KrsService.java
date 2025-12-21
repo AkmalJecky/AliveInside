@@ -4,7 +4,7 @@ import org.krs.model.KelasKuliah;
 import org.krs.model.KrsItem;
 import org.krs.model.Mahasiswa;
 import org.krs.repository.CsvKrsRepository;
-import org.krs.repository.CsvMahasiswaRepository;
+import org.krs.repository.MahasiswaCsvRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.Map;
 public class KrsService {
 
     private final CsvKrsRepository repository;
-    private final CsvMahasiswaRepository mahasiswaRepository;
+    private final MahasiswaCsvRepository mahasiswaRepository;
 
     public KrsService(CsvKrsRepository repository) {
         this.repository = repository;
-        this.mahasiswaRepository = new CsvMahasiswaRepository();
+        this.mahasiswaRepository = new MahasiswaCsvRepository();
     }
 
     public List<KelasKuliah> getPaketSemester2() {
