@@ -7,10 +7,7 @@ import org.krs.model.MataKuliah;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CsvKrsRepository {
 
@@ -74,10 +71,10 @@ public class CsvKrsRepository {
                 if (!p[0].trim().equals(student.getNim())) continue;
 
                 Mahasiswa m = new Mahasiswa(
-                        p[0].trim(),        //nim
-                        p[1].trim(),        //name
-                        Integer.parseInt(p[2].trim()), //semester
-                        student.getMaxSks()   //max sks
+                        p[0].trim(),
+                        p[1].trim(),
+                        Integer.parseInt(p[2].trim()),
+                        student.getMaxSks()
                 );
                 MataKuliah mk = new MataKuliah(
                         p[4].trim(),
@@ -141,7 +138,7 @@ public class CsvKrsRepository {
                 String[] p = line.split(",");
                 if (p.length < 12) continue;
 
-                String kodeKelas = p[7].trim(); // kolom kode_kelas [file:11]
+                String kodeKelas = p[7].trim();
                 counts.merge(kodeKelas, 1, Integer::sum);
             }
         } catch (IOException e) {
@@ -167,6 +164,7 @@ public class CsvKrsRepository {
                 new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8)
         );
     }
+
     private static final String KRS_HEADER =
             "nim,nama,semester,semester_copy,kode_mk,nama_mk,sks," +
                     "kode_kelas,hari,jam_mulai,jam_selesai,ruangan";
@@ -179,7 +177,7 @@ public class CsvKrsRepository {
         );
     }
 
-    //Delete KRS
+    // Delete KRS
     public void deleteKrsItem(KrsItem target) {
         File file = new File(KRS_FILE);
         if (!file.exists()) return;
@@ -204,11 +202,10 @@ public class CsvKrsRepository {
                 String kodeMk = p[4].trim();
                 String kodeKelas = p[7].trim();
 
-                // jika cocok dengan item yang mau dihapus, SKIP baris ini
                 if (nim.equals(nimTarget)
                         && kodeMk.equals(kodeMkTarget)
                         && kodeKelas.equals(kodeKelasTarget)) {
-                    continue;
+                    continue; // skip baris yang dihapus
                 }
                 allLines.add(line);
             }
@@ -217,7 +214,6 @@ public class CsvKrsRepository {
             return;
         }
 
-        // tulis ulang file
         try (BufferedWriter writer = newWriter(KRS_FILE, false)) {
             for (String l : allLines) {
                 writer.write(l);
@@ -228,4 +224,45 @@ public class CsvKrsRepository {
         }
     }
 
+    // ---------- UPDATE NAMA MAHASISWA DI KRS.CSV ----------
+    public void updateNamaMahasiswa(String nimTarget, String namaBaru) {
+        List<String> lines = new ArrayList<>();
+        File file = new File(KRS_FILE);
+        if (!file.exists()) return;
+
+        try (BufferedReader reader = newReader(KRS_FILE)) {
+            String header = reader.readLine();
+            if (header != null) {
+                lines.add(header); // simpan header
+            }
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) continue;
+                String[] p = line.split(",");
+                if (p.length < 12) {
+                    lines.add(line);
+                    continue;
+                }
+
+                if (p[0].trim().equals(nimTarget)) {
+                    p[1] = namaBaru;          // kolom nama
+                    line = String.join(",", p);
+                }
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try (BufferedWriter writer = newWriter(KRS_FILE, false)) {
+            for (String l : lines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

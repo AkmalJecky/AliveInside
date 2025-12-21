@@ -1,7 +1,10 @@
 package org.krs.ui;
 
 import org.krs.model.Mahasiswa;
+import org.krs.repository.CsvKrsRepository;
 import org.krs.repository.MahasiswaCsvRepository;
+import org.krs.service.KrsService;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -165,4 +168,25 @@ public class LoginPanel extends JPanel {
             mainFrame.showPage("PILIH_B");
         }
     }
+
+    private void doUpdateNama() {
+        Mahasiswa mhs = mainFrame.getCurrentStudent();
+        if (mhs == null) {
+            JOptionPane.showMessageDialog(this, "Belum ada mahasiswa yang login");
+            return;
+        }
+
+        String namaBaru = JOptionPane.showInputDialog(this,
+                "Masukkan nama baru:", mhs.getName());
+        if (namaBaru == null || namaBaru.isBlank()) {
+            return; // dibatalkan
+        }
+
+        // akses KrsService lewat panel KRS A (atau buat instance sendiri)
+        KrsService service = new KrsService(new CsvKrsRepository());
+        service.updateNamaMahasiswa(mhs, namaBaru);
+
+        JOptionPane.showMessageDialog(this, "Nama berhasil diperbarui.");
+    }
+
 }

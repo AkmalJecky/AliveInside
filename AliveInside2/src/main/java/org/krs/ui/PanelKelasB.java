@@ -47,16 +47,19 @@ public class PanelKelasB extends JPanel {
 
         JPanel buttonPanel = new JPanel();
 
-        JButton btnDelete = new JButton("Hapus");
-        JButton btnBack = new JButton("Kembali");
+        JButton btnDelete    = new JButton("Hapus");
+        JButton btnEditUser  = new JButton("Edit User");
+        JButton btnBack      = new JButton("Kembali");
 
         btnDelete.addActionListener(_ -> hapusKrsTerpilih());
+        btnEditUser.addActionListener(_ -> editCurrentUser());
         btnBack.addActionListener(_ -> {
             mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("PILIH_B");
         });
 
         buttonPanel.add(btnDelete);
+        buttonPanel.add(btnEditUser);
         buttonPanel.add(btnBack);
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -108,18 +111,34 @@ public class PanelKelasB extends JPanel {
 
         if (konfirmasi != JOptionPane.YES_OPTION) return;
 
-        // hapus dari file
         krsService.deleteKrsItem(item);
 
-        // hapus dari list & tabel di memory
         currentKrsItems.remove(row);
         tableModel.removeRow(row);
-        // setelah menghapus dari file, reload kapasitas di panel pilih matkul
+
         if (mainFrame.getPanelPilihB() != null) {
-            mainFrame.getPanelPilihB().refreshMahasiswaInfo(); // update SKS
-            mainFrame.getPanelPilihB().reloadClasses();        // method untuk panggil loadAllClasses()
+            mainFrame.getPanelPilihB().refreshMahasiswaInfo();
+            mainFrame.getPanelPilihB().reloadClasses();
+        }
+    }
+
+    // ---- EDIT USER: panggil service updateNamaMahasiswa ----
+    private void editCurrentUser() {
+        Mahasiswa mhs = mainFrame.getCurrentStudent();
+        if (mhs == null) {
+            JOptionPane.showMessageDialog(this, "Belum ada mahasiswa yang login");
+            return;
         }
 
+        String namaBaru = JOptionPane.showInputDialog(
+                this,
+                "Nama baru:",
+                mhs.getName()
+        );
+        if (namaBaru == null || namaBaru.isBlank()) return;
+
+        krsService.updateNamaMahasiswa(mhs, namaBaru);
+
+        JOptionPane.showMessageDialog(this, "Nama berhasil diubah menjadi: " + namaBaru);
     }
 }
-

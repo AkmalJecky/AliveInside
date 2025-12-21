@@ -146,17 +146,22 @@ public class PanelKelasA extends JPanel {
     // ====== BOTTOM: tombol kembali ======
     private JPanel buildBottomButtons() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JButton btnEditUser = new JButton("Edit User");
+        btnEditUser.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnEditUser.addActionListener(_ -> editCurrentUser());
+
         JButton btnBack = new JButton("Kembali");
         btnBack.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnBack.setBackground(new Color(0x9C27B0));
         btnBack.setForeground(Color.WHITE);
         btnBack.setFocusPainted(false);
-
         btnBack.addActionListener(_ -> {
             mainFrame.setTitle("Sistem KRS");
             mainFrame.showPage("LOGIN");
         });
 
+        buttonPanel.add(btnEditUser);
         buttonPanel.add(btnBack);
         return buttonPanel;
     }
@@ -208,5 +213,27 @@ public class PanelKelasA extends JPanel {
         lblSemValue.setText(String.valueOf(mhs.getSemester()));
 
         loadPaketSemester2();
+    }
+
+    private void editCurrentUser() {
+        Mahasiswa mhs = mainFrame.getCurrentStudent();
+        if (mhs == null) {
+            JOptionPane.showMessageDialog(this, "Belum ada mahasiswa yang login");
+            return;
+        }
+
+        String namaBaru = JOptionPane.showInputDialog(
+                this,
+                "Nama baru:",
+                mhs.getName()
+        );
+        if (namaBaru == null || namaBaru.isBlank()) return;
+
+        krsService.updateNamaMahasiswa(mhs, namaBaru);
+
+        // refresh label kalau di PanelKelasA
+        // lblNamaValue.setText(namaBaru);
+
+        JOptionPane.showMessageDialog(this, "Nama berhasil diubah menjadi: " + namaBaru);
     }
 }
