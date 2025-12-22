@@ -106,13 +106,6 @@ All CSV files are stored under `data/`.
 
 ---
 
-## 🛠 Future Improvements
-
-- Replace CSV with a real database (e.g., MySQL / PostgreSQL).
-- Add user authentication per account instead of only NIM + name.
-- Export KRS to PDF.
-- Add unit tests for `KrsService` business logic.
-
 ## 👨‍💻 Authors
 
 - **AkmalJecky (Jeckz)** – Frontend / UI (Java Swing panels, layout, and visual design).
