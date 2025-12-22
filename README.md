@@ -99,7 +99,9 @@ All CSV files are stored under `data/`.
 
 ## 🔍 Main Flows
 
-- **Login** → `LoginPanel` → validate to `MahasiswaCsvRepository` → set `currentStudent` in `MainFrame`.  
+- **Login** → `LoginPanel` → validate to `MahasiswaCsvRepository` → set `currentStudent` in `MainFrame`.
+<img width="878" height="536" alt="Image" src="https://github.com/user-attachments/assets/80761f08-17e7-4784-ae21-f457055dab25" />
+
 - **Class A** → `PanelKelasA` → load fixed package via `KrsService.getPaketSemester2()` → display only.  
 - **Class B Select Courses** → `PanelPilihMatkulB` → show available classes with enrollment → validate using `KrsService.canAddCourse()` → save to `krs.csv`.  
 - **Class B View/Delete KRS** → `PanelKelasB` → load `loadExistingKrs()` → delete via `deleteKrsItem()`.
