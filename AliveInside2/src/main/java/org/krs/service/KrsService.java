@@ -6,7 +6,6 @@ import org.krs.model.Mahasiswa;
 import org.krs.repository.CsvKrsRepository;
 import org.krs.repository.MahasiswaCsvRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +23,6 @@ public class KrsService {
         return repository.loadPaketSemester2();
     }
 
-    public List<KelasKuliah> getSemester3Classes() {
-        return repository.loadMkSemester3();
-    }
 
     public int calculateTotalSks(List<KrsItem> items) {
         return items.stream()
@@ -34,6 +30,12 @@ public class KrsService {
                 .sum();
     }
 
+    /**
+     * Checks if adding a new class will cause a schedule conflict.
+     * @param currentItems Current KRS items.
+     * @param newClass New class to add.
+     * @return true if there is a conflict, false otherwise.
+     */
     public boolean hasScheduleConflict(List<KrsItem> currentItems, KelasKuliah newClass) {
         return currentItems.stream().anyMatch(item ->
                 item.getKelasKuliah().getDay().equalsIgnoreCase(newClass.getDay()) &&
@@ -72,18 +74,10 @@ public class KrsService {
         return newTotal <= student.getMaxSks();
     }
 
-    private List<KrsItem> toKrsItems(Mahasiswa student, List<KelasKuliah> classes) {
-        List<KrsItem> result = new ArrayList<>();
-        for (KelasKuliah k : classes) {
-            result.add(new KrsItem(student, k));
-        }
-        return result;
-    }
-
-    public List<KrsItem> generatePackageKrs(Mahasiswa student) {
-        return toKrsItems(student, getPaketSemester2());
-    }
-
+    /**
+     * Saves a list of KRS items to the repository.
+     * @param items List of KRS items to save.
+     */
     public void saveKrsItems(List<KrsItem> items) {
         for (KrsItem item : items) {
             repository.appendKrsItem(item);
@@ -94,9 +88,6 @@ public class KrsService {
         return repository.loadKrsByNim(student);
     }
 
-    public void savePackageKrs(Mahasiswa student) {
-        saveKrsItems(generatePackageKrs(student));
-    }
 
     public List<KelasKuliah> getSemester3ClassesWithEnrollment() {
         List<KelasKuliah> classes = repository.loadMkSemester3();
@@ -115,13 +106,15 @@ public class KrsService {
         repository.deleteKrsItem(item);
     }
 
-    // ---------- UPDATE NAMA (service) ----------
+    /**
+     * Updates a student's name in both KRS and master files.
+     * @param student Student to update.
+     * @param namaBaru New name.
+     */
     public void updateNamaMahasiswa(Mahasiswa student, String namaBaru) {
         student.setName(namaBaru);
 
         repository.updateNamaMahasiswa(student.getNim(), namaBaru);
-
-        // update juga di master mahasiswa.csv
         mahasiswaRepository.updateNamaMahasiswa(student.getNim(), namaBaru);
     }
 }

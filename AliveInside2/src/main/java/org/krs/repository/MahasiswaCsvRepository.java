@@ -9,7 +9,12 @@ public class MahasiswaCsvRepository {
 
     private static final String FILE_PATH = "data" + File.separator + "mahasiswa.csv";
 
-    // READ: cari kelas berdasarkan NIM dan Nama (login)
+    /**
+     * Finds the class (A/B) of a student based on NIM and name from the CSV file.
+     * @param nim Student's NIM.
+     * @param nama Student's name.
+     * @return The class (A/B) if found, otherwise null.
+     */
     public String getKelasByNimAndNama(String nim, String nama) {
         File file = new File(FILE_PATH);
         if (!file.exists()) {
