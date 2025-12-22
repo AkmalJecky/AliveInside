@@ -16,7 +16,10 @@ public class CsvKrsRepository {
     private static final String MK_SEM3_FILE    = BASE_PATH + "mk_sem3.csv";
     private static final String KRS_FILE        = BASE_PATH + "krs.csv";
 
-    // ---------- load master classes ----------
+    /**
+     * Loads semester 2 & 3 class packages from the CSV file.
+     * @return List of semester 2 & 3 classes.
+     */
     public List<KelasKuliah> loadPaketSemester2() {
         return loadClassesFromCsv(PAKET_SEM2_FILE);
     }
@@ -56,7 +59,11 @@ public class CsvKrsRepository {
         return result;
     }
 
-    // ---------- KRS per student ----------
+    /**
+     * Loads KRS data for a specific student from the CSV file.
+     * @param student The student to search for.
+     * @return List of KRS items for the student.
+     */
     public List<KrsItem> loadKrsByNim(Mahasiswa student) {
         List<KrsItem> items = new ArrayList<>();
         File file = new File(KRS_FILE);
@@ -177,7 +184,10 @@ public class CsvKrsRepository {
         );
     }
 
-    // Delete KRS
+    /**
+     * Deletes a specific KRS item from the CSV file.
+     * @param target The KRS item to be deleted.
+     */
     public void deleteKrsItem(KrsItem target) {
         File file = new File(KRS_FILE);
         if (!file.exists()) return;
@@ -224,7 +234,11 @@ public class CsvKrsRepository {
         }
     }
 
-    // ---------- UPDATE NAMA MAHASISWA DI KRS.CSV ----------
+    /**
+     * Updates a student's name in the CSV file.
+     * @param nimTarget The NIM of the student.
+     * @param namaBaru The new name.
+     */
     public void updateNamaMahasiswa(String nimTarget, String namaBaru) {
         List<String> lines = new ArrayList<>();
         File file = new File(KRS_FILE);

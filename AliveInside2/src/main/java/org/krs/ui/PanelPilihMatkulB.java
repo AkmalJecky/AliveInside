@@ -1,3 +1,7 @@
+/**
+ * UI panel for students in class B to select courses for their KRS.
+ */
+
 package org.krs.ui;
 
 import org.krs.model.KelasKuliah;
@@ -151,10 +155,16 @@ public class PanelPilihMatkulB extends JPanel {
         }
     }
 
+    /**
+     * Reloads the class list (for refresh).
+     */
     public void reloadClasses() {
         loadAllClasses();
     }
 
+    /**
+     * Updates student information and KRS status in the panel.
+     */
     public void refreshMahasiswaInfo() {
         Mahasiswa mhs = mainFrame.getCurrentStudent();
         currentItems.clear();
@@ -176,6 +186,9 @@ public class PanelPilihMatkulB extends JPanel {
         lblSksInfo.setText("Total SKS diambil: " + totalSks + " / " + mhs.getMaxSks());
     }
 
+    /**
+     * Handles the process of selecting and adding a class to the student's KRS.
+     */
     private void ambilKelasTerpilih() {
         int row = table.getSelectedRow();
         if (row == -1) {

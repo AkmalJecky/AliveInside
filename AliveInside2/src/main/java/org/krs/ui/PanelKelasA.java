@@ -231,9 +231,6 @@ public class PanelKelasA extends JPanel {
 
         krsService.updateNamaMahasiswa(mhs, namaBaru);
 
-        // refresh label kalau di PanelKelasA
-        // lblNamaValue.setText(namaBaru);
-
         JOptionPane.showMessageDialog(this, "Nama berhasil diubah menjadi: " + namaBaru);
     }
 }

@@ -44,18 +44,6 @@ public class KelasKuliah {
         return currentEnrolled >= capacity;
     }
 
-    public void incrementEnrolled() {
-        if (currentEnrolled < capacity) {
-            currentEnrolled++;
-        }
-    }
-
-    public void decrementEnrolled() {
-        if (currentEnrolled > 0) {
-            currentEnrolled--;
-        }
-    }
-
     @Override
     public String toString() {
         return "%s - %s %s %s-%s @ %s (%d SKS)"
