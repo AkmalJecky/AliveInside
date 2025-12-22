@@ -109,6 +109,7 @@ All CSV files are stored under `data/`.
 ---
 
 ## 👨‍💻 Authors
+<img width="46" height="46" alt="Image" src="https://github.com/user-attachments/assets/77f8da11-c774-49d5-bee8-a76fd3411645" />    **AkmalJecky (Jeckz)** – Frontend / UI (Java Swing panels, layout, and visual design).
+  
+<img width="46" height="46" alt="Image" src="https://github.com/user-attachments/assets/1a46bf07-ad30-4024-bdc9-df49bc90bab9" />    **xzilliazia (Zia)** – Backend / Logic (services, repositories, CSV handling, and business rules).
 
-- **AkmalJecky (Jeckz)** – Frontend / UI (Java Swing panels, layout, and visual design).
-- **xzilliazia (Zia)** – Backend / Logic (services, repositories, CSV handling, and business rules).
